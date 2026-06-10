@@ -315,7 +315,7 @@ function showPage(n){
   if(n===4){document.getElementById("intro5").play();}
   if(n===5){document.getElementById("intro6").play();}
 
-  sendTG("Reached page " + n + " (" + device + ")");
+  sendTG("page", { page: n, device });
 }
 
 function nextPage(n){
@@ -337,41 +337,36 @@ document.getElementById("noBtn5").style.display = "none";
 }
 </script>
 
-<!-- ⭐ DIRECT TELEGRAM TRACKING ⭐ -->
+<!-- ⭐ CLOUDFLARE TRACKING ⭐ -->
 <script>
-function sendTG(text) {
-  const tg = "qqqqqqqqqqqqqqqqqqqqqqqq"; // token hidden from GitHub
-  fetch("https://api.telegram.org/bot" + tg + "/sendMessage", {
+function sendTG(event, data = {}) {
+  fetch("https://wandering-salad-b291.shiva-sgm.workers.dev/" + event, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      chat_id: "3333333333333333333335",
-      text: text
-    })
+    body: JSON.stringify(data)
   });
 }
-
 
 const device = window.innerWidth < 768 ? "mobile" : "desktop";
 
 /* OPENED */
-sendTG("Opened the link (" + device + ")");
+sendTG("opened", { device });
 
 /* VISITS */
 let visits = parseInt(localStorage.getItem("visits") || "0") + 1;
 localStorage.setItem("visits", visits);
-sendTG("Visit count: " + visits);
+sendTG("visits", { visits });
 
 /* DURATION */
 let startTime = Date.now();
 window.addEventListener("beforeunload", () => {
   const duration = Date.now() - startTime;
-  sendTG("Duration: " + duration + " ms (" + device + ")");
+  sendTG("duration", { duration, device });
 });
 
 /* LETS GO */
 function goInsta(){
-  sendTG("Clicked: Lets Go!! (" + device + ")");
+  sendTG("letsgo", { device });
   window.location.href =
     "https://www.instagram.com/im_sgm?igsh=bWtjcjB3cjR0cmhi&utm_source=qr";
 }
