@@ -21,7 +21,7 @@ background:black;
 color:white;
 overflow:hidden;
 }
-    
+
 /* VIDEO */
 video{
 position:fixed;
@@ -65,7 +65,7 @@ transform:translateY(30px) scale(0.95);
 pointer-events:none;
 }
 
-/* GLASS BACKGROUND FOR ALL TEXT */
+/* GLASS BACKGROUND */
 .textGlass{
 background:rgba(255,255,255,0.15);
 backdrop-filter:blur(5px);
@@ -171,7 +171,6 @@ top:10px;
 right:10px;
 font-size:12px;
 }
-
 </style>
 </head>
 
@@ -269,7 +268,6 @@ I could never forget your birthday ❤️
 </div>
 
 <script>
-
 /* ⭐ AUTO‑SWITCH VIDEO SOURCES ⭐ */
 const isMobile = window.matchMedia("(max-width: 768px)").matches;
 
@@ -303,20 +301,27 @@ alert("Wrong password😝");
 }
 }
 
-/* PAGE SWITCH */
+/* ⭐ MERGED PAGE SWITCH + TRACKING ⭐ */
+const webhook = "https://wandering-salad-b291.shiva-sgm.workers.dev";
+const device = window.innerWidth < 768 ? "mobile" : "desktop";
+
 function showPage(n){
-document.querySelectorAll(".page").forEach(p=>p.classList.add("hidden"));
+  document.querySelectorAll(".page").forEach(p => p.classList.add("hidden"));
 
-setTimeout(()=>{
-document.getElementById("page"+n).classList.remove("hidden");
-},200);
+  setTimeout(() => {
+    document.getElementById("page" + n).classList.remove("hidden");
+  }, 200);
 
-/* play videos */
-if(n===1){document.getElementById("intro2").play();}
-if(n===2){document.getElementById("intro3").play();}
-if(n===3){document.getElementById("intro4").play();}
-if(n===4){document.getElementById("intro5").play();}
-if(n===5){document.getElementById("intro6").play();}
+  if(n===1){document.getElementById("intro2").play();}
+  if(n===2){document.getElementById("intro3").play();}
+  if(n===3){document.getElementById("intro4").play();}
+  if(n===4){document.getElementById("intro5").play();}
+  if(n===5){document.getElementById("intro6").play();}
+
+  fetch(`${webhook}/page`, {
+    method: "POST",
+    body: JSON.stringify({ page: n, device })
+  });
 }
 
 function nextPage(n){
@@ -339,22 +344,21 @@ document.getElementById("noBtn5").style.display = "none";
 
 /* YES BUTTON PAGE 5 */
 function goInsta(){
-window.location.href = "https://www.instagram.com/im_sgm?igsh=bWtjcjB3cjR0cmhi&utm_source=qr";
+  fetch(`${webhook}/letsgo`, {
+    method: "POST",
+    body: JSON.stringify({ device })
+  });
+
+  window.location.href = "https://www.instagram.com/im_sgm?igsh=bWtjcjB3cjR0cmhi&utm_source=qr";
 }
 
-</script>
-
-<script>
-const webhook = "https://wandering-salad-b291.shiva-sgm.workers.dev";
-const device = window.innerWidth < 768 ? "mobile" : "desktop";
-
-// 1) Notify when link is opened
+/* ⭐ TRACK OPENED ⭐ */
 fetch(`${webhook}/opened`, {
   method: "POST",
   body: JSON.stringify({ device })
 });
 
-// 2) Track session duration
+/* ⭐ TRACK DURATION ⭐ */
 let startTime = Date.now();
 window.addEventListener("beforeunload", () => {
   let duration = Date.now() - startTime;
@@ -364,30 +368,7 @@ window.addEventListener("beforeunload", () => {
   });
 });
 
-// 3) Track page reached
-function showPage(n){
-  document.querySelectorAll(".page").forEach(p => p.classList.add("hidden"));
-  setTimeout(() => {
-    document.getElementById("page" + n).classList.remove("hidden");
-  }, 200);
-
-  fetch(`${webhook}/page`, {
-    method: "POST",
-    body: JSON.stringify({ page: n, device })
-  });
-}
-
-// 4) Track “Let’s Go!!” click
-function goInsta(){
-  fetch(`${webhook}/letsgo`, {
-    method: "POST",
-    body: JSON.stringify({ device })
-  });
-
-  window.location.href = "https://www.instagram.com/im_sgm";
-}
-
-// 5) Track visit count
+/* ⭐ TRACK VISITS ⭐ */
 let visits = localStorage.getItem("visits") || 0;
 visits++;
 localStorage.setItem("visits", visits);
@@ -397,7 +378,6 @@ fetch(`${webhook}/visits`, {
   body: JSON.stringify({ visits, device })
 });
 </script>
-
 
 </body>
 </html>
