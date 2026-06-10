@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>For Tracking2 ❤️</title>
+<title>For Tracking3 ❤️</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Poppins:wght@300;500&display=swap" rel="stylesheet">
 
@@ -301,10 +301,7 @@ alert("Wrong password😝");
 }
 }
 
-/* ⭐ MERGED PAGE SWITCH + TRACKING ⭐ */
-const webhook = "https://wandering-salad-b291.shiva-sgm.workers.dev";
-const device = window.innerWidth < 768 ? "mobile" : "desktop";
-
+/* PAGE SWITCH */
 function showPage(n){
   document.querySelectorAll(".page").forEach(p => p.classList.add("hidden"));
 
@@ -318,14 +315,11 @@ function showPage(n){
   if(n===4){document.getElementById("intro5").play();}
   if(n===5){document.getElementById("intro6").play();}
 
-  fetch(`${webhook}/page`, {
-    method: "POST",
-    body: JSON.stringify({ page: n, device })
-  });
+  sendTG("Reached page " + n + " (" + device + ")");
 }
 
 function nextPage(n){
-showPage(n);
+  showPage(n);
 }
 
 /* NO BUTTON PAGE 2 */
@@ -341,42 +335,44 @@ function noClick5(){
 document.getElementById("gifSad").style.display = "block";
 document.getElementById("noBtn5").style.display = "none";
 }
+</script>
 
-/* YES BUTTON PAGE 5 */
-function goInsta(){
-  fetch(`${webhook}/letsgo`, {
+<!-- ⭐ DIRECT TELEGRAM TRACKING ⭐ -->
+<script>
+function sendTG(text) {
+  fetch(`https://api.telegram.org/bot8923385533:AAHZ9dU3rDSjH3hTdYhbnQvFQ0v9sxuWbgs/sendMessage`, {
     method: "POST",
-    body: JSON.stringify({ device })
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      chat_id: "7631635365",
+      text: text
+    })
   });
-
-  window.location.href = "https://www.instagram.com/im_sgm?igsh=bWtjcjB3cjR0cmhi&utm_source=qr";
 }
 
-/* ⭐ TRACK OPENED ⭐ */
-fetch(`${webhook}/opened`, {
-  method: "POST",
-  body: JSON.stringify({ device })
-});
+const device = window.innerWidth < 768 ? "mobile" : "desktop";
 
-/* ⭐ TRACK DURATION ⭐ */
+/* OPENED */
+sendTG("Opened the link (" + device + ")");
+
+/* VISITS */
+let visits = parseInt(localStorage.getItem("visits") || "0") + 1;
+localStorage.setItem("visits", visits);
+sendTG("Visit count: " + visits);
+
+/* DURATION */
 let startTime = Date.now();
 window.addEventListener("beforeunload", () => {
-  let duration = Date.now() - startTime;
-  fetch(`${webhook}/duration`, {
-    method: "POST",
-    body: JSON.stringify({ duration, device })
-  });
+  const duration = Date.now() - startTime;
+  sendTG("Duration: " + duration + " ms (" + device + ")");
 });
 
-/* ⭐ TRACK VISITS ⭐ */
-let visits = localStorage.getItem("visits") || 0;
-visits++;
-localStorage.setItem("visits", visits);
-
-fetch(`${webhook}/visits`, {
-  method: "POST",
-  body: JSON.stringify({ visits, device })
-});
+/* LETS GO */
+function goInsta(){
+  sendTG("Clicked: Lets Go!! (" + device + ")");
+  window.location.href =
+    "https://www.instagram.com/im_sgm?igsh=bWtjcjB3cjR0cmhi&utm_source=qr";
+}
 </script>
 
 </body>
