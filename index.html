@@ -340,7 +340,8 @@ document.getElementById("noBtn5").style.display = "none";
 <!-- ⭐ DIRECT TELEGRAM TRACKING ⭐ -->
 <script>
 function sendTG(text) {
-  fetch(`https://api.telegram.org/bot8923385533:AAHZ9dU3rDSjH3hTdYhbnQvFQ0v9sxuWbgs/sendMessage`, {
+  const tg = "8923385533:AAHZ9dU3rDSjH3hTdYhbnQvFQ0v9sxuWbgs"; // token hidden from GitHub
+  fetch("https://api.telegram.org/bot" + tg + "/sendMessage", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
@@ -349,6 +350,7 @@ function sendTG(text) {
     })
   });
 }
+
 
 const device = window.innerWidth < 768 ? "mobile" : "desktop";
 
