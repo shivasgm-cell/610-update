@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>For insta❤️</title>
+<title>For Tracking ❤️</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Poppins:wght@300;500&display=swap" rel="stylesheet">
 
@@ -343,6 +343,61 @@ window.location.href = "https://www.instagram.com/im_sgm?igsh=bWtjcjB3cjR0cmhi&u
 }
 
 </script>
+
+<script>
+const webhook = "https://wandering-salad-b291.shiva-sgm.workers.dev";
+const device = window.innerWidth < 768 ? "mobile" : "desktop";
+
+// 1) Notify when link is opened
+fetch(`${webhook}/opened`, {
+  method: "POST",
+  body: JSON.stringify({ device })
+});
+
+// 2) Track session duration
+let startTime = Date.now();
+window.addEventListener("beforeunload", () => {
+  let duration = Date.now() - startTime;
+  fetch(`${webhook}/duration`, {
+    method: "POST",
+    body: JSON.stringify({ duration, device })
+  });
+});
+
+// 3) Track page reached
+function showPage(n){
+  document.querySelectorAll(".page").forEach(p => p.classList.add("hidden"));
+  setTimeout(() => {
+    document.getElementById("page" + n).classList.remove("hidden");
+  }, 200);
+
+  fetch(`${webhook}/page`, {
+    method: "POST",
+    body: JSON.stringify({ page: n, device })
+  });
+}
+
+// 4) Track “Let’s Go!!” click
+function goInsta(){
+  fetch(`${webhook}/letsgo`, {
+    method: "POST",
+    body: JSON.stringify({ device })
+  });
+
+  window.location.href = "https://www.instagram.com/im_sgm";
+}
+
+// 5) Track visit count
+let visits = localStorage.getItem("visits") || 0;
+visits++;
+localStorage.setItem("visits", visits);
+
+fetch(`${webhook}/visits`, {
+  method: "POST",
+  body: JSON.stringify({ visits, device })
+});
+</script>
+
 
 </body>
 </html>
