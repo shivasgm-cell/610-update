@@ -269,11 +269,16 @@ June-12th,<br>
 </div>
 
 <script>
-/* ⭐ AUTO‑SWITCH VIDEO SOURCES ⭐ */
+/* ⭐ PRELOAD INTRO1 BEFORE ANYTHING ⭐ */
 const isMobile = window.matchMedia("(max-width: 768px)").matches;
 
+const intro1 = document.getElementById("intro1");
+intro1.src = isMobile ? "intro1v.mp4" : "intro1.mp4";
+intro1.load();
+intro1.play().catch(()=>{});
+
+/* ⭐ AUTO‑SWITCH VIDEO SOURCES (EXCEPT intro1) ⭐ */
 const videoSources = {
-    intro1: isMobile ? "intro1v.mp4" : "intro1.mp4",
     intro2: isMobile ? "intro2v.mp4" : "intro2.mp4",
     intro3: isMobile ? "intro3v.mp4" : "intro3.mp4",
     intro4: isMobile ? "intro4v.mp4" : "intro4.mp4",
